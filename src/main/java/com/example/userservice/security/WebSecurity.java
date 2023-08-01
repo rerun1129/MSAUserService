@@ -20,9 +20,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurity {
     private final UserService userService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final BCryptPasswordEncoder encoder;
+    private final Environment environment;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter();
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(userService, environment);
         authenticationFilter.setAuthenticationManager(authenticationManager());
         http.csrf().disable();
         http.headers(authorize -> authorize
@@ -41,12 +43,7 @@ public class WebSecurity {
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder ();
-    }
-
-    @Bean
     AuthenticationManager authenticationManager ( AuthenticationManagerBuilder builder ) throws Exception {
-        return builder.userDetailsService(userService).passwordEncoder(passwordEncoder()).and().build();
+        return builder.userDetailsService(userService).passwordEncoder(encoder).and().build();
     }
 }

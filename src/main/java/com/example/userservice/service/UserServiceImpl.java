@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
 
@@ -68,5 +68,14 @@ public class UserServiceImpl implements UserService{
                 true,
                 true,
                 new ArrayList<> () );
+    }
+
+    @Override
+    public UserDto getUserDetailsByEmail ( String email ) {
+        UserEntity entity = userRepository.findByEmail ( email );
+        if ( entity == null ) {
+            throw new UsernameNotFoundException ( email );
+        }
+        return new ModelMapper ().map ( entity, UserDto.class );
     }
 }
