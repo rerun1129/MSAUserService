@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -50,5 +52,21 @@ public class UserServiceImpl implements UserService{
     @Override
     public Iterable <UserEntity> getUserByAll ( ) {
         return userRepository.findAll ();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername ( String username ) throws UsernameNotFoundException {
+        UserEntity entity = userRepository.findByEmail ( username );
+        if(entity == null){
+            throw new UsernameNotFoundException(username);
+        }
+        return new User (
+                entity.getEmail (),
+                entity.getEncryptedPassword (),
+                true,
+                true,
+                true,
+                true,
+                new ArrayList<> () );
     }
 }
