@@ -33,7 +33,10 @@ public class WebSecurity {
                                                 authorize.antMatchers ( "/**" )
                                                             .permitAll ( )
                                                             .and ( )
-                                                            .addFilter ( authenticationFilter ) );
+                                                            .addFilter ( authenticationFilter ) )
+                                                            .authorizeHttpRequests (  )
+                                                            .antMatchers ( "/actuator/**" )
+                                                            .permitAll ();
         return http.build ( );
     }
 
