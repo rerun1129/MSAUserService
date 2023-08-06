@@ -8,11 +8,16 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +28,8 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
+    private final Environment env;
+    private final RestTemplate restTemplate;
 
     @Override
     public UserDto createUser ( UserDto userDto ) {
@@ -44,8 +51,13 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findByUserId ( userId );
         if(userEntity == null) throw new UsernameNotFoundException ( "User not found" );
         UserDto userDto = new ModelMapper ( ).map ( userEntity, UserDto.class );
-        List <ResponseOrder> orders = new ArrayList <> ( );
-        userDto.setOrders ( orders );
+//        List <ResponseOrder> orders = new ArrayList <> ( );
+        //첫번째 방법
+        String orderUrl = String.format ( env.getProperty ( "order_service.url" ), userId );
+        ResponseEntity <List <ResponseOrder>> exchange = restTemplate.exchange ( orderUrl, HttpMethod.GET, null,
+                                                                    new ParameterizedTypeReference <> ( ) { }
+                                                                        );
+        userDto.setOrders ( exchange.getBody () );
         return userDto;
     }
 
