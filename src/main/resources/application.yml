@@ -53,7 +53,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans, busrefresh
+        include: refresh, health, beans, busrefresh, metrics, prometheus
 #token:
 #  expiration_time: 86400000
 #  secret: user_token
