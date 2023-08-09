@@ -33,6 +33,8 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+	implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.3.RELEASE'
 //	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 	implementation 'com.h2database:h2:1.3.176'
 	implementation 'io.github.qsy7.java.dependencies:javax-validation:0.1.2'

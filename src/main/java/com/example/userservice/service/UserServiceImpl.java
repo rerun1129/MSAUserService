@@ -72,9 +72,11 @@ public class UserServiceImpl implements UserService {
             //에러 디코더
 //        List <ResponseOrder> orderList = client.getOrders ( userId );
         //서킷 브레이커
+        log.info ( "Before call orders MS" );
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create ( "circuitbreaker" );
         List <ResponseOrder> orderList = circuitbreaker.run ( () -> client.getOrders ( userId ),
                                                                 throwable -> new ArrayList <> () );
+        log.info ( "After call orders MS" );
         userDto.setOrders ( orderList );
         return userDto;
     }
